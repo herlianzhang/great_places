@@ -30,6 +30,10 @@
 	<string>We need to access your library</string>
 	<key>NSCameraUsageDescription</key>
 	<string>We need to access your camera</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>We need to access your location</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>We need to access your location</string>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
