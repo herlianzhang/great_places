@@ -7,21 +7,63 @@ import '../models/place.dart';
 class MapScreen extends StatefulWidget {
   final PlaceLocation initialLocation;
   final bool isSelecting;
-  
-  MapScreen({this.initialLocation = const PlaceLocation(latitude: 0.7893, longitude: 113.9213), this.isSelecting = false});
-  
+
+  MapScreen(
+      {this.initialLocation =
+          const PlaceLocation(latitude: 0.7893, longitude: 113.9213),
+      this.isSelecting = false});
+
   @override
   _MapScreenState createState() => _MapScreenState();
 }
 
 class _MapScreenState extends State<MapScreen> {
+  LatLng myLatLng;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.isSelecting == true)
+      myLatLng = LatLng(
+          widget.initialLocation.latitude, widget.initialLocation.longitude);
+  }
+
+  void _selectLocation(LatLng latlng) {
+    setState(() {
+      myLatLng = latlng;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Map'),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.save),
+            onPressed: myLatLng == null ? null : () {
+              Navigator.of(context).pop(myLatLng);
+            },
+          ),
+        ],
       ),
-      body: GoogleMap(initialCameraPosition: CameraPosition(target: LatLng(widget.initialLocation.latitude, widget.initialLocation.longitude)),),
+      body: GoogleMap(
+        initialCameraPosition: CameraPosition(
+          target: LatLng(widget.initialLocation.latitude,
+              widget.initialLocation.longitude),
+          zoom: widget.isSelecting ? 16 : 0,
+        ),
+        onTap: _selectLocation,
+        markers: myLatLng == null
+            ? null
+            : {
+                Marker(
+                  markerId: MarkerId('m1'),
+                  position: myLatLng,
+                ),
+              },
+      ),
     );
   }
 }

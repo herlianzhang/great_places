@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:great_places/helpers/location_helper.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:great_places/models/place.dart';
 import 'package:great_places/screens/map_screen.dart';
 import 'package:location/location.dart';
 
@@ -9,23 +10,34 @@ class LocationInput extends StatefulWidget {
 }
 
 class _LocationInputState extends State<LocationInput> {
-  String _previewImageUrl;
+  LatLng _previewImageUrl;
 
   Future<void> _getCurrentUserLocation() async {
     final loc = await Location().getLocation();
-    final staticMapImageUrl = LocationHelper.generateLocationPreviewImage(
-        latitude: loc.latitude, longitude: loc.longitude);
     setState(() {
-      _previewImageUrl = staticMapImageUrl;
+      _previewImageUrl = LatLng(loc.latitude, loc.longitude);
     });
   }
 
   Future<void> _selectOnMap() async {
-    final selectedLocation = await Navigator.of(context).push(MaterialPageRoute(
-      builder: (context) => MapScreen(),
+    final selectedLocation = await Navigator.of(context).push<LatLng>(MaterialPageRoute(
+      builder: (context) {
+        return _previewImageUrl == null
+            ? MapScreen()
+            : MapScreen(
+                initialLocation: PlaceLocation(
+                  latitude: _previewImageUrl.latitude,
+                  longitude: _previewImageUrl.longitude,
+                ),
+                isSelecting: true,
+              );
+      },
     ));
 
     if (selectedLocation == null) return;
+    setState(() {
+      _previewImageUrl = selectedLocation;
+    });
   }
 
   @override
@@ -48,10 +60,9 @@ class _LocationInputState extends State<LocationInput> {
                     textAlign: TextAlign.center,
                   ),
                 )
-              : Image.network(
-                  _previewImageUrl,
-                  fit: BoxFit.cover,
-                  width: double.infinity,
+              : Center(
+                  child: Text(
+                      'Lat: ${_previewImageUrl.latitude}, Lng: ${_previewImageUrl.longitude}'),
                 ),
         ),
         Row(
