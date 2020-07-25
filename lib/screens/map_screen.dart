@@ -7,11 +7,12 @@ import '../models/place.dart';
 class MapScreen extends StatefulWidget {
   final PlaceLocation initialLocation;
   final bool isSelecting;
+  final bool isFromDetail;
 
   MapScreen(
       {this.initialLocation =
           const PlaceLocation(latitude: 0.7893, longitude: 113.9213),
-      this.isSelecting = false});
+      this.isSelecting = false, this.isFromDetail = false});
 
   @override
   _MapScreenState createState() => _MapScreenState();
@@ -40,7 +41,7 @@ class _MapScreenState extends State<MapScreen> {
       appBar: AppBar(
         title: Text('Map'),
         actions: <Widget>[
-          IconButton(
+          if (!widget.isFromDetail) IconButton(
             icon: Icon(Icons.save),
             onPressed: myLatLng == null ? null : () {
               Navigator.of(context).pop(myLatLng);
@@ -54,7 +55,7 @@ class _MapScreenState extends State<MapScreen> {
               widget.initialLocation.longitude),
           zoom: widget.isSelecting ? 16 : 0,
         ),
-        onTap: _selectLocation,
+        onTap: (!widget.isFromDetail) ? _selectLocation : null,
         markers: myLatLng == null
             ? null
             : {
