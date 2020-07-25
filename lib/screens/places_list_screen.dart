@@ -24,31 +24,34 @@ class PlacesListScreen extends StatelessWidget {
         child: FutureBuilder(
           future: Provider.of<GreatPlaces>(context, listen: false)
               .fetchAndSetPlaces(),
-          builder: (context, snapshot) =>
-              snapshot.connectionState == ConnectionState.waiting
-                  ? Center(
-                      child: CircularProgressIndicator(),
-                    )
-                  : Consumer<GreatPlaces>(
-                      child: Center(
-                        child: Text('Got no places yet, start adding some!'),
-                      ),
-                      builder: (context, value, child) {
-                        return value.items.length <= 0
-                            ? child
-                            : ListView.builder(
-                                itemCount: value.items.length,
-                                itemBuilder: (context, index) => ListTile(
-                                  leading: CircleAvatar(
-                                    backgroundImage:
-                                        FileImage(value.items[index].image),
-                                  ),
-                                  title: Text(value.items[index].title),
-                                  onTap: () => print('image path = ${value.items[index].image.path}'),
-                                ),
-                              );
-                      },
-                    ),
+          builder: (context, snapshot) => snapshot.connectionState ==
+                  ConnectionState.waiting
+              ? Center(
+                  child: CircularProgressIndicator(),
+                )
+              : Consumer<GreatPlaces>(
+                  child: Center(
+                    child: Text('Got no places yet, start adding some place'),
+                  ),
+                  builder: (context, value, child) {
+                    return value.items.length <= 0
+                        ? child
+                        : ListView.builder(
+                            itemCount: value.items.length,
+                            itemBuilder: (context, index) => ListTile(
+                              leading: CircleAvatar(
+                                backgroundImage:
+                                    FileImage(value.items[index].image),
+                              ),
+                              title: Text(value.items[index].title),
+                              subtitle:
+                                  Text(value.items[index].location.address),
+                              onTap: () => print(
+                                  'image path = ${value.items[index].image.path}'),
+                            ),
+                          );
+                  },
+                ),
         ),
       ),
     );

@@ -8,7 +8,7 @@ class DBHelper {
     return sql.openDatabase(path.join(dbPath, database),
         onCreate: (db, version) {
       return db.execute(
-          'CREATE TABLE $table(id TEXT PRIMARY KEY, title TEXT, image TEXT)');
+          'CREATE TABLE $table(id TEXT PRIMARY KEY, title TEXT, image TEXT, lat REAL, lng REAL, address TEXT)');
     }, version: 1);
   }
 
